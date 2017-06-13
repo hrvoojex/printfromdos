@@ -22,4 +22,4 @@ elif sys.platform == "darwin":
     pass
 elif sys.platform == "win32":
     # Windows
-    os.startfile("C:/Users/TestFile.txt", "print")
+    os.startfile("C:/tmp/tmp.txt", "print")

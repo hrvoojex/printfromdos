@@ -6,7 +6,7 @@ import cgi
 import tempfile
 import win32api
 
-source_file_name = "c:/temp/temp.txt"
+source_file_name = "c:/tmp/tmp.txt"
 pdf_file_name = tempfile.mktemp(".pdf")
 
 styles = getSampleStyleSheet()
@@ -30,4 +30,4 @@ for line in text[1:]:
     story.append(Spacer (1, 0.2 * inch))
 
 doc.build(story)
-win32api.ShellExecute(0, "print", pdf_file_name, None, ".", 0) 
+win32api.ShellExecute(0, "print", pdf_file_name, None, ".", 0)
