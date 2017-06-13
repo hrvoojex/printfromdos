@@ -1,0 +1,11 @@
+Instalacija Pythona 3.4.3 (zadnja verzija 3 koja podržava XP):
+
+1. Instalirati python-3.4.3.msi 32-bitni paket u C:\Python34
+2. Staviti C:\Python34 u sistemsku PATH varijablu
+3. Instalirati win32api modul sa narednom 'pip' koja mora biti u PATH-u
+	
+	python -m pip install pypiwin32
+
+4. Pokrenuti skriptu s naredbom:
+
+	python print_rawpcl.py "C:\SMECE\file_za_print.txt"
