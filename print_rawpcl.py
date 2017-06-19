@@ -15,6 +15,7 @@ import os
 import sys
 import io
 import win32print
+import win32api
 import subprocess
 
 
@@ -35,7 +36,7 @@ else:
     win32print.SetDefaultPrinter(tmp_printer)
     
 try:
-# rb je za 'read, bytes', string je byte ne enkodiran tekst
+    # rb je za 'read, bytes', string je byte ne enkodiran tekst
     with io.open(file_to_print,'rb') as f:
         raw_data = f.read()
         hPrinter = win32print.OpenPrinter(win32print.GetDefaultPrinter())
@@ -53,6 +54,19 @@ try:
     #os.remove(file_to_print)
 except OSError as e:
     print("Pojavila se greška: {}".format(e))
-    
+
+# Convert pcl file to pdf if the default printer is local_pcl
+if win32print.GetDefaultPrinter() == "local_pcl":
+    # convert PCL file to PDF file with WinPCLtoPDF.exe
+    #subprocess.Popen(['"C:\tmp\WinPCLtoPDF.exe C:\tmp\print.pcl C:\tmp\output.pdf"'])
+    subprocess.call(['C:/Python34/WinPCLtoPDF.exe', 'print.pcl'])
+
 # return default printer to the printer before running this script
 win32print.SetDefaultPrinter(first_default_printer)
+
+# Finally, print that print.pdf to your first default printer silently
+file_path = "C:\\Python34\\print.pdf"
+p = subprocess.Popen(["C:\\Program Files\\Ghostgum\\gsview\\gsprint.exe", file_path],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+stdout, stderr = p.communicate() # waits for the gs process to end
+os.remove(file_path) # now the file can be removed
