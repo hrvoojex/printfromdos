@@ -25,10 +25,8 @@ def remove_silently(file1):
 # Asign your printers
 first_default_printer = win32print.GetDefaultPrinter()
 tmp_printer = "local_pcl"
-# This 'print.pcl' is an output from virtual 'local_pcl' printer
-my_pcl_file = "print.pcl"
-my_output_pdf = "print.pdf"
 
+# Remove files if they already exist
 remove_silently(my_output_pdf)
 remove_silently(my_pcl_file)
 
@@ -39,14 +37,16 @@ else:
     file_to_print = "RACUN.TXT"
 
 # Searching for supported PCL printers as default printer
+pcl_supported = False
 supported_printers = ["2035", "1320", "KONICA", "DIREKT"]
 for item in supported_printers:
     if item.lower() in first_default_printer.lower():
-        # do nothing if a printer is supporting PCL
-        pass
+        pcl_supported = True
+        break
     else:
-        # if the printer is not supporting PCL and can't print RAW data
-        # change default printer to local_pcl
+        is_supported = False
+
+if pcl_supported == False:
         win32print.SetDefaultPrinter(tmp_printer)
 
 # Printing RAW data to the virtual 'local_pcl' printer or to the 'HP LJ P2035'
@@ -69,23 +69,26 @@ try:
 except OSError as e:
     print("Failed: {}".format(e))
 
-converter_app = "WinPCLtoPDF.exe"
 # Convert a pcl file to pdf with WinPCLtoPDF.exe
 # if the default printer is local_pcl
+converter_app = "WinPCLtoPDF.exe"
+my_pcl_file = "print.pcl"
 if win32print.GetDefaultPrinter() == "local_pcl":
     subprocess.call([converter_app, my_pcl_file])
 
-# return default printer to the printer before running this script
-win32print.SetDefaultPrinter(first_default_printer)
-gsprint_app = "C:\\Program Files\\Ghostgum\\gsview\\gsprint.exe"
-# Finally, print that print.pdf to your first default printer silently
-p = subprocess.Popen(
-        [gsprint_app, my_output_pdf],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-# Waits for the gs process to end
-stdout, stderr = p.communicate()
-# Remove print.pcl and print.pdf file
-remove_silently(my_output_pdf)
-remove_silently(my_pcl_file)
-remove_silently(file_to_print)
+    # return default printer to the printer that was default at the start
+    win32print.SetDefaultPrinter(first_default_printer)
 
+    # Finally, print that print.pdf to your first default printer silently
+    gsprint_app = "C:\\Program Files\\Ghostgum\\gsview\\gsprint.exe"
+    my_output_pdf = "print.pdf"
+    p = subprocess.Popen(
+            [gsprint_app, my_output_pdf],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Waits for the gs process to end
+    stdout, stderr = p.communicate()
+    # Remove print.pcl and print.pdf file
+    remove_silently(my_output_pdf)
+    remove_silently(my_pcl_file)
+
+remove_silently(file_to_print)
