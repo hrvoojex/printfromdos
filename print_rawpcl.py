@@ -38,14 +38,16 @@ if len(sys.argv) > 1:
 else:
     file_to_print = "RACUN.TXT"
 
-# HP LJ P2035 supports PCL, so no need to choose different printer
-if "2035" in first_default_printer:
-    # do nothing if a printer is supporting PCL
-    pass
-else:
-    # if the printer is not supporting PCL and can't print RAW data
-    # change default printer to local_pcl 
-    win32print.SetDefaultPrinter(tmp_printer)
+# Searching for supported PCL printers as default printer
+supported_printers = ["2035", "1320", "KONICA", "DIREKT"]
+for item in supported_printers:
+    if item.lower() in first_default_printer.lower():
+        # do nothing if a printer is supporting PCL
+        pass
+    else:
+        # if the printer is not supporting PCL and can't print RAW data
+        # change default printer to local_pcl
+        win32print.SetDefaultPrinter(tmp_printer)
 
 # Printing RAW data to the virtual 'local_pcl' printer or to the 'HP LJ P2035'
 try:
