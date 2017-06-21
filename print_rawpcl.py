@@ -45,13 +45,13 @@ for item in supported_printers:
     if item.lower() in first_default_printer.lower():
         pcl_supported = True
         break
-    else:
-        is_supported = False
 
-if pcl_supported == False:
+# If our printer doesn't support PCL, we declare virtual local_pcl printer
+# as default one and create .pcl file
+if not pcl_supported:
         win32print.SetDefaultPrinter(tmp_printer)
 
-# Printing RAW data to the virtual 'local_pcl' printer or to the 'HP LJ P2035'
+# Printing RAW data to the default printer
 try:
     # rb --> 'read, bytes', string is 'bytes' type, not unicode (Python3)
     with io.open(file_to_print, 'rb') as f:
@@ -71,10 +71,8 @@ try:
 except OSError as e:
     print("Failed: {}".format(e))
 
-# Convert a pcl file to pdf with WinPCLtoPDF.exe
+# Convert a pcl file to pdf with GhostPCL (Ghostscript)
 # if the default printer is local_pcl
-#converter_app = "WinPCLtoPDF.exe"
-#converter_app = 'C:/Program Files/VeryPDF PCL Converter v2.7/pcltool.exe'
 converter_app = 'C:/Python34/ghostpcl-9.21-win32/gpcl6win32.exe'
 if win32print.GetDefaultPrinter() == "local_pcl":
     subprocess.call(
@@ -87,8 +85,8 @@ if win32print.GetDefaultPrinter() == "local_pcl":
     # Finally, print that print.pdf to your first default printer silently
     gsprint_app = "C:\\Program Files\\Ghostgum\\gsview\\gsprint.exe"
     p = subprocess.Popen(
-            [gsprint_app, my_output_pdf],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            [gsprint_app, my_output_pdf], stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
     # Waits for the gs process to end
     stdout, stderr = p.communicate()
     # Remove print.pcl and print.pdf file
