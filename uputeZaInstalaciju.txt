@@ -1,11 +1,18 @@
-Instalacija Pythona 3.4.3 (zadnja verzija 3 koja podr�ava XP):
+Instalacija Pythona 3.4.3 (zadnja verzija 3 koja podržava XP):
 
-1. Instalirati python-3.4.3.msi 32-bitni paket u C:\Python34
+1. Instalirati 'python-3.4.3.msi' 32-bitni paket u C:\Python34
 2. Staviti C:\Python34 u sistemsku PATH varijablu
 3. Instalirati win32api modul sa narednom 'pip' koja mora biti u PATH-u
 	
 	python -m pip install pypiwin32
 
-4. Pokrenuti skriptu s naredbom:
+4. Kopirati folder 'ghostpcl-9.21-win32' u folder C:\Python34\
+5. Instalirati gsview program 'gsv49w32.exe' u C:\Program Files\Ghostgum
+6. Instalirati virtualni printer naziva 'local_pcl' tako da se ode na
+	'Add new printer' pa se odabere 'Add new port' pa se kreira
+	local port naziva 'C:\Pyton34\print.pcl' i za driver se odabere
+	printer koji podržava PCL npr. HP LJ P2035, 1320 ili HP LJ 4 itd.
 
-	python print_rawpcl.py "C:\SMECE\file_za_print.txt"
+7. Pokrenuti skriptu s naredbom:
+
+	python print_rawpcl.py "C:\Python34\file_za_print.txt"
