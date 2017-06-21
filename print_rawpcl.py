@@ -22,9 +22,11 @@ def remove_silently(file1):
     except OSError:
         pass
 
-# Asign your printers
+# Asign your printers and variables
 first_default_printer = win32print.GetDefaultPrinter()
 tmp_printer = "local_pcl"
+my_pcl_file = "print.pcl"
+my_output_pdf = "print.pdf"
 
 # Remove files if they already exist
 remove_silently(my_output_pdf)
@@ -72,7 +74,6 @@ except OSError as e:
 # Convert a pcl file to pdf with WinPCLtoPDF.exe
 # if the default printer is local_pcl
 converter_app = "WinPCLtoPDF.exe"
-my_pcl_file = "print.pcl"
 if win32print.GetDefaultPrinter() == "local_pcl":
     subprocess.call([converter_app, my_pcl_file])
 
@@ -81,7 +82,6 @@ if win32print.GetDefaultPrinter() == "local_pcl":
 
     # Finally, print that print.pdf to your first default printer silently
     gsprint_app = "C:\\Program Files\\Ghostgum\\gsview\\gsprint.exe"
-    my_output_pdf = "print.pdf"
     p = subprocess.Popen(
             [gsprint_app, my_output_pdf],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -91,4 +91,5 @@ if win32print.GetDefaultPrinter() == "local_pcl":
     remove_silently(my_output_pdf)
     remove_silently(my_pcl_file)
 
+# Removes that first txt file
 remove_silently(file_to_print)
