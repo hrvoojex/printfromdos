@@ -73,7 +73,8 @@ except OSError as e:
 
 # Convert a pcl file to pdf with WinPCLtoPDF.exe
 # if the default printer is local_pcl
-converter_app = "WinPCLtoPDF.exe"
+#converter_app = "WinPCLtoPDF.exe"
+converter_app = 'C:/Program Files/VeryPDF PCL Converter v2.7/pcltool.exe'
 if win32print.GetDefaultPrinter() == "local_pcl":
     subprocess.call([converter_app, my_pcl_file])
 
