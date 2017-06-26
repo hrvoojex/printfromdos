@@ -5,7 +5,7 @@
 Autor: Hrvoje T.
 Last edit: June 2017
 
-'pip install pypiwin32 --> for installing win32api'
+'pip install pypiwin32 --> for installing win32print'
 In python 2: 'python -m pip install pypiwin32'
 io module for io.open in Python2, the same as 'open' in Python3
 
