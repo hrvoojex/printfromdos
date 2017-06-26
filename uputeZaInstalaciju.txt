@@ -1,8 +1,8 @@
-Instalacija Pythona 3.4.3 (zadnja verzija 3 koja podržava XP):
+Instalacija printanja na USB iz programa Pult(F11):
 
-1. Instalirati 'python-3.4.3.msi' 32-bitni paket u C:\Python34
+1. Instalirati 'python-3.4.3.msi' 32-bitni paket u C:\Python34 (verzija 3.4.3 zadnja koja podžava XP)
 2. Staviti C:\Python34 u sistemsku PATH varijablu
-3. Instalirati win32api modul sa narednom 'pip' koja mora biti u PATH-u
+3. Instalirati PyWin32 paket radi 'win32print' modula, sa naredbom 'pip' koja je u 'C:\Python' i mora biti u PATH-u
 	
 	python -m pip install pypiwin32
 

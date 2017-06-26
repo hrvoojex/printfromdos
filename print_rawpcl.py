@@ -2,17 +2,22 @@
 # -*- coding: utf-8 -*-
 
 """
-Autor: Hrvoje T
+Autor: Hrvoje T.
 Last edit: June 2017
 
 'pip install pypiwin32 --> for installing win32api'
 In python 2: 'python -m pip install pypiwin32'
 io module for io.open in Python2, the same as 'open' in Python3
+
 First command line argument is for file name which we want to print:
 'python print_rawpcl.py my_pcl_text_file.txt'
 """
 
-import os, sys, io, win32print, win32api, subprocess
+import os
+import sys
+import io
+import win32print
+import subprocess
 
 
 def remove_silently(file1):
@@ -22,9 +27,12 @@ def remove_silently(file1):
     except OSError:
         pass
 
-# Asign your printers and variables
+
+# Asign your printers
 first_default_printer = win32print.GetDefaultPrinter()
 tmp_printer = "local_pcl"
+
+# Asign your variables
 my_pcl_file = "print.pcl"
 my_output_pdf = "print.pdf"
 
@@ -71,22 +79,19 @@ try:
 except OSError as e:
     print("Failed: {}".format(e))
 
-# Convert a pcl file to pdf with GhostPCL (Ghostscript)
-# if the default printer is local_pcl
+# Convert a pcl file to pdf with GhostPCL (Ghostscript) if the default printer
+# is virtual 'local_pcl' and then print that pdf file
 converter_app = 'C:/Python34/ghostpcl-9.21-win32/gpcl6win32.exe'
 if win32print.GetDefaultPrinter() == "local_pcl":
-    subprocess.call(
-        [converter_app, '-dNOPAUSE', '-dBATCH', '-sDEVICE=pdfwrite',
-        '-sOutputFile=print.pdf', 'print.pcl'])
-
+    subprocess.call([converter_app, '-dNOPAUSE', '-dBATCH',
+                    '-sDEVICE=pdfwrite', '-sOutputFile=print.pdf', 'print.pcl'])
     # return default printer to the printer that was default at the start
     win32print.SetDefaultPrinter(first_default_printer)
 
     # Finally, print that print.pdf to your first default printer silently
     gsprint_app = "C:\\Program Files\\Ghostgum\\gsview\\gsprint.exe"
-    p = subprocess.Popen(
-            [gsprint_app, my_output_pdf], stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+    p = subprocess.Popen([gsprint_app, my_output_pdf],
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # Waits for the gs process to end
     stdout, stderr = p.communicate()
     # Remove print.pcl and print.pdf file
