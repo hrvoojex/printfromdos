@@ -1,18 +1,22 @@
-Instalacija printanja na USB iz programa Pult(F11):
+Instalacija printanja na USB laserski printer iz programa Pult(F11):
 
 1. Instalirati 'python-3.4.3.msi' 32-bitni paket u C:\Python34 (verzija 3.4.3 zadnja koja podžava XP)
 2. Staviti C:\Python34 u sistemsku PATH varijablu
 3. Instalirati PyWin32 paket radi 'win32print' modula, sa naredbom 'pip' koja je u 'C:\Python' i mora biti u PATH-u
-	
+
 	python -m pip install pypiwin32
 
-4. Kopirati folder 'ghostpcl-9.21-win32' u folder C:\Python34\
-5. Instalirati gsview program 'gsv49w32.exe' u C:\Program Files\Ghostgum
+4. Kopirati binarnu datoteku WinPCLtoPDF.exe u C:\Python34\
+5. Kopirati skriptu print_rawpcl.py u C:\Python34\
 6. Instalirati virtualni printer naziva 'local_pcl' tako da se ode na
 	'Add new printer' pa se odabere 'Add new port' pa se kreira
-	local port naziva 'C:\Pyton34\print.pcl' i za driver se odabere
+	local port naziva 'C:\SMECE\print.pcl' i za driver se odabere
 	printer koji podržava PCL npr. HP LJ P2035, 1320 ili HP LJ 4 itd.
 
-7. Pokrenuti skriptu s naredbom:
+7. Pokrenuti skriptu radi testa s naredbom:
 
 	python print_rawpcl.py "C:\Python34\file_za_print.txt"
+
+   Ako printer podržava PCL naredbe onda će se odmah dokument isprintat, ali
+   ako printer ne podržava PCL onda će se datoteka u PDF obliku otvoriti u
+   Google Chromeu, odakle može biti isprintana.

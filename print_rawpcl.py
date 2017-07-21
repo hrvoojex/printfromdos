@@ -18,6 +18,7 @@ import sys
 import io
 import win32print
 import subprocess
+import webbrowser
 
 
 def remove_silently(file1):
@@ -31,14 +32,6 @@ def remove_silently(file1):
 # Asign your printers
 first_default_printer = win32print.GetDefaultPrinter()
 tmp_printer = "local_pcl"
-
-# Asign your variables
-my_pcl_file = "print.pcl"
-my_output_pdf = "print.pdf"
-
-# Remove files if they already exist
-remove_silently(my_output_pdf)
-remove_silently(my_pcl_file)
 
 # If there is command line argument, the first one is our file_to_print
 if len(sys.argv) > 1:
@@ -81,22 +74,14 @@ except OSError as e:
 
 # Convert a pcl file to pdf with GhostPCL (Ghostscript) if the default printer
 # is virtual 'local_pcl' and then print that pdf file
-converter_app = 'C:/Python34/ghostpcl-9.21-win32/gpcl6win32.exe'
+converter_app = 'C:/Python34/WinPCLtoPDF.exe'
+myPCLfile = 'C:/SMECE/print.pcl'
+myPDFfile = 'C:/SMECE/print.pdf'
+
+remove_silently(myPCLfile)
+remove_silently(myPDFfile)
+
 if win32print.GetDefaultPrinter() == "local_pcl":
-    subprocess.call([converter_app, '-dNOPAUSE', '-dBATCH',
-                    '-sDEVICE=pdfwrite', '-sOutputFile=print.pdf', 'print.pcl'])
-    # return default printer to the printer that was default at the start
+    subprocess.call([converter_app, myPCLfile])
     win32print.SetDefaultPrinter(first_default_printer)
-
-    # Finally, print that print.pdf to your first default printer silently
-    gsprint_app = "C:\\Program Files\\Ghostgum\\gsview\\gsprint.exe"
-    p = subprocess.Popen([gsprint_app, my_output_pdf],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    # Waits for the gs process to end
-    stdout, stderr = p.communicate()
-    # Remove print.pcl and print.pdf file
-    remove_silently(my_output_pdf)
-    remove_silently(my_pcl_file)
-
-# Removes that first txt file
-remove_silently(file_to_print)
+    webbrowser.open('file://' + os.path.realpath(myPDFfile))
