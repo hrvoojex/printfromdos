@@ -5,6 +5,8 @@ from reportlab.lib.units import inch
 import cgi
 import tempfile
 import win32api
+import html
+
 
 source_file_name = "c:/tmp/tmp.txt"
 pdf_file_name = tempfile.mktemp(".pdf")
@@ -19,7 +21,6 @@ doc = SimpleDocTemplate(pdf_file_name)
 #  data; need to escape ampersands &c.
 #
 text = cgi.escape(open(source_file_name).read()).splitlines()
-
 #
 # Take the first line of the document as a
 #  header; the rest are treated as body text.
@@ -31,3 +32,4 @@ for line in text[1:]:
 
 doc.build(story)
 win32api.ShellExecute(0, "print", pdf_file_name, None, ".", 0)
+
