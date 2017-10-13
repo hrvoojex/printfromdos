@@ -14,58 +14,69 @@ First command line argument is for file name which we want to print:
 'python print_rawpcl.py myPCLfile.txt'
 """
 
-# import os
-# import sys
-# import io
-# import time
-# import win32print
-#
-#
-# # If there is command line argument, the first one is our file_to_print
-# if len(sys.argv) > 1:
-#     file_to_print = sys.argv[1]
-# else:
-#     file_to_print = "RACUN.TXT"
-#
-# # Printing RAW data to the default printer
-# try:
-#     # rb --> 'read, bytes', string is 'bytes' type, not unicode (Python3)
-#     with io.open(file_to_print, 'rb') as f:
-#         raw_data = f.read()
-#         hPrinter = win32print.OpenPrinter(win32print.GetDefaultPrinter())
-#         try:
-#             hJob = win32print.StartDocPrinter(hPrinter, 1, (
-#                     "print_rawpcl.py data", None, "RAW"))
-#             try:
-#                 win32print.StartPagePrinter(hPrinter)
-#                 win32print.WritePrinter(hPrinter, test_str)
-#                 win32print.EndPagePrinter(hPrinter)
-#             finally:
-#                 win32print.EndDocPrinter(hPrinter)
-#         finally:
-#             win32print.ClosePrinter(hPrinter)
-# except OSError as e:
-#     print("Failed: {}".format(e))
-#
-# # Message at the end of execution
-# print("Script finished successfully. Everything OK!")
-# time.sleep(2)  # Wait 2 seconds for reader to read
-
-import tempfile
+import sys
+import time
 import win32api
 import win32print
+import tempfile
+import winreg
 
-filename = tempfile.mktemp (".txt")
-open (filename, "w").write ("This is a test")
-win32api.ShellExecute (
-  0,
-  "print",
-  filename,
-  #
-  # If this is None, the default printer will
-  # be used anyway.
-  #
-  '/d:"%s"' % win32print.GetDefaultPrinter (),
-  ".",
-  0
-)
+
+my_encoding = "cp852"
+
+def notepad_print(textfile, newset=None):
+    if newset is not None:
+        oldset = {}
+        hkcu = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
+        notepad = winreg.OpenKey(hkcu, r'Software\Microsoft\Notepad', 0,
+                                 winreg.KEY_ALL_ACCESS)
+        for key, item in newset.items():
+            oldset[key] = winreg.QueryValueEx(notepad, key)
+            winreg.SetValueEx(notepad, key, None, item[1], item[0])
+
+    #force printing with notepad, instead of using the 'print' verb
+    win32api.ShellExecute(0, 'open', 'notepad.exe', '/p ' + textfile, '.', 0)
+    #win32api.ShellExecute(0, 'print', textfile, None, '.', 0)
+    # win32api.ShellExecute(0,
+    #                       'print',
+    #                       textfile,
+    #                       '/d:"%s"' % win32print.GetDefaultPrinter(),
+    #                       '.',
+    #                       0)
+
+    input('once the job is queued, hit <enter> to continue')
+
+    if newset is not None:
+        for key, item in oldset.items():
+            winreg.SetValueEx(notepad, key, None, item[1], item[0])
+
+# If there is command line argument, the first one is our file_to_print
+if len(sys.argv) > 1:
+    file_to_print = sys.argv[1]
+else:
+    print("No input file")
+    sys.exit()
+
+try:
+    with open(file_to_print, "rb") as f:
+        raw_data = f.read()
+        raw_data_unicode = raw_data.decode(my_encoding)
+        raw_data = raw_data_unicode.encode("utf-8")
+
+    filename = "C:/SMECE/print.txt"
+    with open(filename, "wb") as d:
+        d.write(raw_data)
+        notepad_print(filename, {'szHeader': ('', 1), 'szTrailer': ('', 1)})
+        # win32api.ShellExecute(
+        #     0,
+        #     "print",
+        #     filename,
+        #     '/d:"%s"' % win32print.GetDefaultPrinter(),
+        #     ".",
+        #     0
+        # )
+except OSError as e:
+    print("Failed: {}".format(e))
+
+print("Script ended. Everything OK!")
+time.sleep(2)
