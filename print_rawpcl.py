@@ -91,7 +91,13 @@ except OSError as e:
 if win32print.GetDefaultPrinter() == "local_pcl":
     subprocess.call([converter_app, myPCLfile])
     win32print.SetDefaultPrinter(first_default_printer)
-    webbrowser.open('file://' + os.path.realpath(myPDFfile))
+    win32print.ShellExecute(0,
+                          "print",
+                          myPDFfile,
+                          '/d:"%s"' % first_default_printer,
+                          ".",
+                          0)
+    #webbrowser.open('file://' + os.path.realpath(myPDFfile))
 
 # Message at the end of execution
 print("Script finished successfully. Everything OK!")
