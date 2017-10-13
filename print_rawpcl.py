@@ -44,30 +44,14 @@ remove_silently(myPDFfile)
 # Asign your printers
 first_default_printer = win32print.GetDefaultPrinter()
 tmp_printer = "local_pcl"
+# #Declare virtual printer 'local_pcl' as default one
+win32print.SetDefaultPrinter(tmp_printer)
 
 # If there is command line argument, the first one is our file_to_print
 if len(sys.argv) > 1:
     file_to_print = sys.argv[1]
 else:
     file_to_print = "RACUN.TXT"
-
-# #Commented this out on 10.10.2017. Everything goes to pdf now.
-#
-# #Searching for supported PCL printers as default printer
-# pcl_supported = False
-# supported_printers = ["2035", "1320", "KONICA", "DIREKT"]
-# for item in supported_printers:
-#    if item.lower() in first_default_printer.lower():
-#        pcl_supported = True
-#        break
-#
-# #If our printer doesn't support PCL, we declare virtual local_pcl printer
-# #as default one and create .pcl file
-# if not pcl_supported:
-#        win32print.SetDefaultPrinter(tmp_printer)
-#
-# #Declare virtual printer 'local_pcl' as default one
-win32print.SetDefaultPrinter(tmp_printer)
  
 # Printing RAW data to the default printer
 try:
@@ -89,16 +73,26 @@ try:
 except OSError as e:
     print("Failed: {}".format(e))
 
-if win32print.GetDefaultPrinter() == "local_pcl":
-    subprocess.call([converter_app, myPCLfile])
-    win32print.SetDefaultPrinter(first_default_printer)
-    win32api.ShellExecute(0,
-                          "print",
-                          myPDFfile,
-                          '/d:"%s"' % first_default_printer,
-                          ".",
-                          0)
-    #webbrowser.open('file://' + os.path.realpath(myPDFfile))
+subprocess.call([converter_app, myPCLfile])
+# Return first default printer as default again
+win32print.SetDefaultPrinter(first_default_printer)
+GHOSTSCRIPT_PATH = "C:\\Documents and Settings\\User\\My Documents\\gs\\GHOSTSCRIPT\\bin\\gswin32.exe"
+GSPRINT_PATH = "C:\\Documents and Settings\\User\\My Documents\\gs\\GSPRINT\\gsprint.exe"
+subprocess.call([GSPRINT_PATH,
+                 '-ghostscript',
+                 GHOSTSCRIPT_PATH,
+                 '-printer',
+                 first_default_printer,
+                 myPDFfile
+                 ])
+
+# win32api.ShellExecute(
+#         0,
+#         'open',
+#         GSPRINT_PATH,
+#         '-ghostscript "'+GHOSTSCRIPT_PATH+'" -printer "'+first_default_printer+'" myPDFfile',
+#         '.',
+#         0)
 
 # Message at the end of execution
 print("Script finished successfully. Everything OK!")
