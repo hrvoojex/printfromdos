@@ -21,6 +21,7 @@ import time
 import win32print
 import subprocess
 import webbrowser
+import win32api
 
 
 def remove_silently(file1):
@@ -91,7 +92,7 @@ except OSError as e:
 if win32print.GetDefaultPrinter() == "local_pcl":
     subprocess.call([converter_app, myPCLfile])
     win32print.SetDefaultPrinter(first_default_printer)
-    win32print.ShellExecute(0,
+    win32api.ShellExecute(0,
                           "print",
                           myPDFfile,
                           '/d:"%s"' % first_default_printer,
