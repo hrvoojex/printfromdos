@@ -18,7 +18,6 @@ import sys
 import time
 import win32api
 import win32print
-import tempfile
 import winreg
 import subprocess
 
@@ -35,7 +34,7 @@ def notepad_print(textfile, newset=None):
             oldset[key] = winreg.QueryValueEx(notepad, key)
             winreg.SetValueEx(notepad, key, None, item[1], item[0])
 
-    #force printing with notepad, instead of using the 'print' verb
+    # force printing with notepad, instead of using the 'print' verb
     win32api.ShellExecute(0, 'open', 'notepad.exe', '/p ' + textfile, '.', 0)
     #win32api.ShellExecute(0, 'print', textfile, None, '.', 0)
     #subprocess.call(['notepad', '/p', textfile])
@@ -68,15 +67,9 @@ try:
     filename = "C:\SMECE\print.txt"
     with open(filename, "wb") as d:
         d.write(raw_data)
+
     notepad_print(filename, {'szHeader': ('', 1), 'szTrailer': ('', 1)})
-        # win32api.ShellExecute(
-        #     0,
-        #     "print",
-        #     filename,
-        #     '/d:"%s"' % win32print.GetDefaultPrinter(),
-        #     ".",
-        #     0
-        # )
+
 except OSError as e:
     print("Failed: {}".format(e))
 
