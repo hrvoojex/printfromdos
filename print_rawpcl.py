@@ -76,23 +76,15 @@ except OSError as e:
 subprocess.call([converter_app, myPCLfile])
 # Return first default printer as default again
 win32print.SetDefaultPrinter(first_default_printer)
-GHOSTSCRIPT_PATH = "C:\\Documents and Settings\\User\\My Documents\\gs\\GHOSTSCRIPT\\bin\\gswin32.exe"
-GSPRINT_PATH = "C:\\Documents and Settings\\User\\My Documents\\gs\\GSPRINT\\gsprint.exe"
-subprocess.call([GSPRINT_PATH,
-                 '-ghostscript',
-                 GHOSTSCRIPT_PATH,
-                 '-printer',
-                 first_default_printer,
-                 myPDFfile
-                 ])
-
-# win32api.ShellExecute(
-#         0,
-#         'open',
-#         GSPRINT_PATH,
-#         '-ghostscript "'+GHOSTSCRIPT_PATH+'" -printer "'+first_default_printer+'" myPDFfile',
-#         '.',
-#         0)
+GHOSTSCRIPT_PATH = r"C:\Documents and Settings\User\My Documents\gs\GHOSTSCRIPT\bin\gswin32.exe"
+GSPRINT_PATH = r"C:\Documents and Settings\User\My Documents\gs\GSPRINT\gsprint.exe"
+win32api.ShellExecute(
+        0,
+        'open',
+        GSPRINT_PATH,
+        '-ghostscript "'+GHOSTSCRIPT_PATH+'" -printer "'+first_default_printer+'" myPDFfile',
+        '.',
+        0)
 
 # Message at the end of execution
 print("Script finished successfully. Everything OK!")
