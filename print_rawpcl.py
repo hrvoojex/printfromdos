@@ -20,6 +20,7 @@ import win32api
 import win32print
 import tempfile
 import winreg
+import subprocess
 
 
 my_encoding = "cp852"
@@ -37,6 +38,7 @@ def notepad_print(textfile, newset=None):
     #force printing with notepad, instead of using the 'print' verb
     win32api.ShellExecute(0, 'open', 'notepad.exe', '/p ' + textfile, '.', 0)
     #win32api.ShellExecute(0, 'print', textfile, None, '.', 0)
+    #subprocess.call(['notepad', '/p', textfile])
     # win32api.ShellExecute(0,
     #                       'print',
     #                       textfile,
@@ -63,10 +65,10 @@ try:
         raw_data_unicode = raw_data.decode(my_encoding)
         raw_data = raw_data_unicode.encode("utf-8")
 
-    filename = "C:/SMECE/print.txt"
+    filename = "C:\SMECE\print.txt"
     with open(filename, "wb") as d:
         d.write(raw_data)
-        notepad_print(filename, {'szHeader': ('', 1), 'szTrailer': ('', 1)})
+    notepad_print(filename, {'szHeader': ('', 1), 'szTrailer': ('', 1)})
         # win32api.ShellExecute(
         #     0,
         #     "print",
