@@ -22,6 +22,7 @@ import win32print
 import subprocess
 import webbrowser
 import win32api
+import win32com.client
 
 
 def remove_silently(file1):
@@ -92,13 +93,16 @@ except OSError as e:
 if win32print.GetDefaultPrinter() == "local_pcl":
     subprocess.call([converter_app, myPCLfile])
     win32print.SetDefaultPrinter(first_default_printer)
-    win32api.ShellExecute(0,
-                          "print",
-                          myPDFfile,
-                          '/d:"%s"' % first_default_printer,
-                          ".",
-                          0)
-    #webbrowser.open('file://' + os.path.realpath(myPDFfile))
+    # win32api.ShellExecute(0,
+    #                       "print",
+    #                       myPDFfile,
+    #                       '/d:"%s"' % first_default_printer,
+    #                       ".",
+    #                       0)
+    webbrowser.open('file://' + os.path.realpath(myPDFfile))
+
+    shell = win32com.client.Dispatch("WScript.Shell")
+    shell.SendKeys("^p") # CTRL+A may "select all" depending on which window's focused
 
 # Message at the end of execution
 print("Script finished successfully. Everything OK!")
