@@ -32,11 +32,12 @@ def remove_silently(file1):
     except OSError:
         pass
 
+
 # Assign a variables for converting a PCL file to pdf with
 # GhostPCL (Ghostscript) if the default printer is virtual 'local_pcl'
 converter_app = 'C:/Python34/WinPCLtoPDF.exe'
-myPCLfile = 'C:/SMECE/print.pcl'
-myPDFfile = 'C:/SMECE/print.pdf'
+myPCLfile = 'C:\SMECE\print.pcl'
+myPDFfile = 'C:\SMECE\print.pdf'
 
 # Remove those files if they exist from previous script execution
 remove_silently(myPCLfile)
@@ -52,21 +53,6 @@ if len(sys.argv) > 1:
 else:
     file_to_print = "RACUN.TXT"
 
-# #Commented this out on 10.10.2017. Everything goes to pdf now.
-#
-# #Searching for supported PCL printers as default printer
-# pcl_supported = False
-# supported_printers = ["2035", "1320", "KONICA", "DIREKT"]
-# for item in supported_printers:
-#    if item.lower() in first_default_printer.lower():
-#        pcl_supported = True
-#        break
-#
-# #If our printer doesn't support PCL, we declare virtual local_pcl printer
-# #as default one and create .pcl file
-# if not pcl_supported:
-#        win32print.SetDefaultPrinter(tmp_printer)
-#
 # #Declare virtual printer 'local_pcl' as default one
 win32print.SetDefaultPrinter(tmp_printer)
  
@@ -90,20 +76,20 @@ try:
 except OSError as e:
     print("Failed: {}".format(e))
 
-if win32print.GetDefaultPrinter() == "local_pcl":
-    subprocess.call([converter_app, myPCLfile])
-    win32print.SetDefaultPrinter(first_default_printer)
-    # win32api.ShellExecute(0,
-    #                       "print",
-    #                       myPDFfile,
-    #                       '/d:"%s"' % first_default_printer,
-    #                       ".",
-    #                       0)
-    webbrowser.open('file://' + os.path.realpath(myPDFfile))
+subprocess.call([converter_app, myPCLfile])
+win32print.SetDefaultPrinter(first_default_printer)
 
-    shell = win32com.client.Dispatch("WScript.Shell")
-    shell.SendKeys("^p") # CTRL+A may "select all" depending on which window's focused
+chrome_path = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+#subprocess.call([chrome_path, '--kiosk' '--kiosk-printing', myPDFfile])
+win32api.ShellExecute(0, "open", chrome_path,
+                      '--kiosk --kiosk-printing ' + myPDFfile, ".", 0)
+time.sleep(5)
+shell = win32com.client.Dispatch("WScript.Shell")
+shell.SendKeys("^p")
+time.sleep(5)
+shell.SendKeys("^w")
 
 # Message at the end of execution
 print("Script finished successfully. Everything OK!")
 time.sleep(2)  # Wait 2 seconds for reader to read
+
