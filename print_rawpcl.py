@@ -3,8 +3,8 @@
 
 """
 Autor: Hrvoje T.
-Last edit: 11.10.2017.
-Version: 1.0.4
+Last edit: 15.10.2017.
+Version: 1.0.5
 
 'pip install pypiwin32 --> for installing win32print'
 In python 2: 'python -m pip install pypiwin32'
@@ -20,7 +20,6 @@ import io
 import time
 import win32print
 import subprocess
-import webbrowser
 import win32api
 import win32com.client
 
@@ -33,8 +32,7 @@ def remove_silently(file1):
         pass
 
 
-# Assign a variables for converting a PCL file to pdf with
-# GhostPCL (Ghostscript) if the default printer is virtual 'local_pcl'
+# Assign a variables for converting a PCL file to pdf
 converter_app = 'C:/Python34/WinPCLtoPDF.exe'
 myPCLfile = 'C:\SMECE\print.pcl'
 myPDFfile = 'C:\SMECE\print.pdf'
@@ -51,7 +49,8 @@ tmp_printer = "local_pcl"
 if len(sys.argv) > 1:
     file_to_print = sys.argv[1]
 else:
-    file_to_print = "RACUN.TXT"
+    print('No input file')
+    sys.exit()
 
 # #Declare virtual printer 'local_pcl' as default one
 win32print.SetDefaultPrinter(tmp_printer)
@@ -80,16 +79,14 @@ subprocess.call([converter_app, myPCLfile])
 win32print.SetDefaultPrinter(first_default_printer)
 
 chrome_path = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
-#subprocess.call([chrome_path, '--kiosk' '--kiosk-printing', myPDFfile])
 win32api.ShellExecute(0, "open", chrome_path,
                       '--kiosk --kiosk-printing ' + myPDFfile, ".", 0)
 time.sleep(5)
 shell = win32com.client.Dispatch("WScript.Shell")
+# Send CTRL+P for printing
 shell.SendKeys("^p")
 time.sleep(5)
+# Send CTRL+W for closing Chrome
 shell.SendKeys("^w")
-
 # Message at the end of execution
 print("Script finished successfully. Everything OK!")
-time.sleep(2)  # Wait 2 seconds for reader to read
-
