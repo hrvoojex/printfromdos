@@ -21,6 +21,7 @@ import time
 import win32print
 import subprocess
 import win32api
+import platform
 import win32com.client
 
 
@@ -75,16 +76,34 @@ try:
 except OSError as e:
     print("Failed: {}".format(e))
 
+# Start converter app and give it an input file
 subprocess.call([converter_app, myPCLfile])
 win32print.SetDefaultPrinter(first_default_printer)
 
-chrome_path = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+# Asign a path based on a CPU arch
+my_x86_path = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+my_x64_path = 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
+
+# Check if CPU is 32 or 64 bit
+if platform.machine() == "x86" or platform.machine() == "i686":
+    chrome_path = my_x86_path
+elif platform.machine() == "AMD64" or platform.machine() == "x86_64":
+    chrome_path = my_x64_path
+else:
+    chrome_path = "Unknown"
+    print("Wrong CPU architecture ...quiting")
+    sys.exit()
+
+# Open Chrome in kiosk printing mode
 win32api.ShellExecute(0, "open", chrome_path,
-                      '--kiosk --kiosk-printing ' + myPDFfile, ".", 0)
+                      '--new-window --kiosk --kiosk-printing ' + myPDFfile, ".", 0)
 time.sleep(5)
 shell = win32com.client.Dispatch("WScript.Shell")
 # Send CTRL+P for printing
 shell.SendKeys("^p")
+time.sleep(1)
+# Press enter key if Chrome is not in kios mode and waiting enter for printing
+shell.SendKeys("{ENTER}", 0)
 time.sleep(5)
 # Send CTRL+W for closing Chrome
 shell.SendKeys("^w")
