@@ -20,8 +20,6 @@ import io
 import time
 import win32print
 import subprocess
-import win32api
-import platform
 import win32com.client
 
 
@@ -80,32 +78,21 @@ except OSError as e:
 subprocess.call([converter_app, myPCLfile])
 win32print.SetDefaultPrinter(first_default_printer)
 
-# Asign a path based on a CPU arch
-my_x86_path = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
-my_x64_path = 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
+# Start reader app and print it
+os.startfile(myPDFfile)
+time.sleep(3)
 
-# Check if CPU is 32 or 64 bit
-if platform.machine() == "x86" or platform.machine() == "i686":
-    chrome_path = my_x86_path
-elif platform.machine() == "AMD64" or platform.machine() == "x86_64":
-    chrome_path = my_x64_path
-else:
-    chrome_path = "Unknown"
-    print("Wrong CPU architecture ...quiting")
-    sys.exit()
-
-# Open Chrome in kiosk printing mode
-win32api.ShellExecute(0, "open", chrome_path,
-                      '--new-window ' + myPDFfile, ".", 0)
-time.sleep(5)
-shell = win32com.client.Dispatch("WScript.Shell")
 # Send CTRL+P for printing
+shell = win32com.client.Dispatch("WScript.Shell")
 shell.SendKeys("^p")
-time.sleep(5)
-# Press enter key if Chrome is not in kios mode and waiting enter for printing
+time.sleep(3)
+
+# Press enter key for printing
 shell.SendKeys("{ENTER}", 0)
-time.sleep(5)
-# Send CTRL+W for closing Chrome
-shell.SendKeys("^w")
+
+# Wait 10 sec and than close the reader
+time.sleep(10)
+os.system("TASKKILL /F /IM AcroRd32.exe")
+
 # Message at the end of execution
 print("Script finished successfully. Everything OK!")
