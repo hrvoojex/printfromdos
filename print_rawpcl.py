@@ -96,12 +96,12 @@ else:
 
 # Open Chrome in kiosk printing mode
 win32api.ShellExecute(0, "open", chrome_path,
-                      '--new-window --kiosk --kiosk-printing ' + myPDFfile, ".", 0)
+                      '--new-window ' + myPDFfile, ".", 0)
 time.sleep(5)
 shell = win32com.client.Dispatch("WScript.Shell")
 # Send CTRL+P for printing
 shell.SendKeys("^p")
-time.sleep(1)
+time.sleep(5)
 # Press enter key if Chrome is not in kios mode and waiting enter for printing
 shell.SendKeys("{ENTER}", 0)
 time.sleep(5)
