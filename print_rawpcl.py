@@ -17,6 +17,7 @@ First command line argument is for file name which we want to print:
 import os
 import sys
 import io
+import uuid
 import time
 import win32print
 import subprocess
@@ -33,12 +34,11 @@ def remove_silently(file1):
 
 # Assign a variables for converting a PCL file to pdf
 converter_app = 'C:/Python34/WinPCLtoPDF.exe'
-myPCLfile = 'C:\SMECE\print.pcl'
-myPDFfile = 'C:\SMECE\print.pdf'
+myPCLfile = 'C:/SMECE/print.pcl'
+myPDFfile = 'C:/SMECE/' + str(uuid.uuid4()) + '.pdf'
 
 # Remove those files if they exist from previous script execution
 remove_silently(myPCLfile)
-remove_silently(myPDFfile)
 
 # Asign your printers
 first_default_printer = win32print.GetDefaultPrinter()
@@ -75,7 +75,7 @@ except OSError as e:
     print("Failed: {}".format(e))
 
 # Start converter app and give it an input file
-subprocess.call([converter_app, myPCLfile])
+subprocess.call([converter_app, myPCLfile, myPDFfile])
 win32print.SetDefaultPrinter(first_default_printer)
 
 # Start reader app and print it
