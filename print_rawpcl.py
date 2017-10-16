@@ -80,19 +80,15 @@ win32print.SetDefaultPrinter(first_default_printer)
 
 # Start reader app and print it
 os.startfile(myPDFfile)
-time.sleep(3)
+time.sleep(4)
 
 # Send CTRL+P for printing
 shell = win32com.client.Dispatch("WScript.Shell")
 shell.SendKeys("^p")
-time.sleep(3)
+time.sleep(4)
 
 # Press enter key for printing
 shell.SendKeys("{ENTER}", 0)
-
-# Wait 10 sec and than close the reader
-time.sleep(10)
-os.system("TASKKILL /F /IM AcroRd32.exe")
 
 # Message at the end of execution
 print("Script finished successfully. Everything OK!")
